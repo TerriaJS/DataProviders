@@ -1,6 +1,7 @@
 ---
-layout: page
-title:  "About"
+layout: post
+title:  "Data Providers Guide"
+date:   2015-05-22 17:10:41
 ---
 There are three parts to this guide:
 
