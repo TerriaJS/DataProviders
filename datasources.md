@@ -3,6 +3,18 @@ layout: page
 title: Supported data sources
 permalink: /datasources/
 ---
+# Introduction
+This guide is for data custodians providing data that will be shown on a TerriaJS instance. This includes:
+
+- providers of data directly to National Map, including Geoscience Australia, and the ABS, 
+- providers of data to National Map indirectly through a CKAN portal, including data.gov.au, data.vic.gov.au and so on.
+- providers of data to other TerriaJS-based sites, including Northern Australia and AREMI
+
+Specifically, if you are managing a geospatial data source such as GeoServer, ArcGIS, or individual spatial files such GeoJSON or KML, this guide is for you.
+
+# Overview
+
+
 Terria can display data from a wide range of data sources. The key principles are:
 
 - data is loaded directly from your data source into the user's browser
@@ -27,17 +39,19 @@ Three kinds of geospatial CSVs are supported:
 Read the [Aus-Geo-CSV specification](Aus-Geo-CSV) for full details.
 
 ### GeoJSON
-...
+TerriaJS supports common coordinate reference systems. We recommend you use either EPSG:4326 (unprojected lat/longs), EPSG:3785 (Web Mercator), or EPSG:4283 (GDA94)
 
 ### KML
-...
+TerriaJS supports both KML and KMZ.
 
-### Other OGR files
-Any file format supported by the OGR suite (GDAL) is indirectly supported by first uploading it through an online conversion process. This is built into TerriaJS. There are several limitations:
+### Shapefiles and other vector formats
+Any [file format supported by the OGR suite](http://www.gdal.org/ogr_formats.html) (part of the GDAL spatial conversion library) is indirectly supported by first uploading it through an online conversion process. This is built into TerriaJS. There are several limitations:
 
 - the user must choose to allow this to happen
-- large files take a long time and may fail
+- files must be under 1MB
 - the overall user experience is slower and less engaging than for natively supported file types
+
+It is in general much better to convert files to a directly supported type, such as GeoJSON.
 
 ## Catalog group types
 ### CKAN (group)
@@ -50,9 +64,6 @@ You can make this easier by:
 
 - tagging all spatial CSV's `Aus-Geo-CSV`
 - providing GeoJSON versions of all spatial files
-
-
-
 
 ### WMS
 
@@ -68,8 +79,6 @@ Map tiles should be served in 50ms or less, with 400ms considered the absolute m
 5. Click `Request Tiles`.
 
 For each dataset, you will see whether all tiles were successfully retrieved, and the average and maximum response time.
-
-
 
 #### Single layer
 #### getCapabilities
