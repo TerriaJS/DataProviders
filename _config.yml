@@ -1,6 +1,6 @@
 # Jekyll configuration
 
-name: Data Provider's Guide
+name: Terria Guides
 description: A guide to sharing data on National Map or through the TerriaJS platform.
 
 # url is currently only used only for the RSS feed in feed.xml

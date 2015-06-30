@@ -1,9 +1,9 @@
 ---
 layout: page
-title: Supported data sources
+title: Data Providers Guide
 permalink: /datasources/
 ---
-# Introduction
+## Introduction
 This guide is for data custodians providing data that will be shown on a TerriaJS instance. This includes:
 
 - providers of data directly to National Map, including Geoscience Australia, and the ABS, 
@@ -12,7 +12,7 @@ This guide is for data custodians providing data that will be shown on a TerriaJ
 
 Specifically, if you are managing a geospatial data source such as GeoServer, ArcGIS, or individual spatial files such GeoJSON or KML, this guide is for you.
 
-# Overview
+## Overview
 
 
 Terria can display data from a wide range of data sources. The key principles are:
@@ -27,6 +27,14 @@ There are three main types:
 - "catalog group" services: 1 URL points to a collection of datasets, such as through WMS `getCapabilities` or CKAN
 - "file" services: 1 URL points to a file which is completely downloaded into the browser by HTTP and then displayed
 
+## Getting data into National Map
+
+There are two options:
+
+- publish data into data.gov.au or another portal, and have it harvested automatically
+- get a dataset or data service added to a curated catalog (email nationalmap@communications.gov.au, for anything other than National Map: nm@lists.nicta.com.au)
+ - Supported protocols: WMS, ESRI, ...
+ - Support file types: CSV, GeoJSON, KML...
 
 ## Files
 ### CSV
