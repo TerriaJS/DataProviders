@@ -43,7 +43,7 @@ The CSV format MUST:
 It SHOULD be encoded in UTF-8. Headers are not considered to be case-sensitive.
 
 ### Use in data.gov.au
-In data.gov.au and other CKAN-based portals, resources (individual files) that conform to this standard SHOULD be given a resource type of `csv-geo-au`. This is required for National Map to locate and display them.
+In data.gov.au and other CKAN-based portals, resources (individual files) that conform to this standard SHOULD be given a resource type of `csv-geo-au`. This is required for National Map to locate and display them. Resources tagged as `csv-geo-au` can also be previewed on data.gov.au like other CSV files.
 
 ###Quick summary
 Tables should look like one of these:
