@@ -6,11 +6,13 @@ permalink: /CSV-geo-au/
 ##  CSV-geo-au 1.1
 
 
-**CSV-geo-au** is a convention for publishing **point** or **region-mapped** geospatial data in CSV format to data.gov.au and other open data portals. Datasets in this format are supported by [TerriaJS](https://github.com/terriajs/terriajs) (and hence the [National Map](http://nationalmap.gov.au/)) and will be useful for other purposes too. A `State` column in a CSV file tagged ` CSV-geo-au` can unambiguously be understood to refer to an Australian state, for example.
+**CSV-geo-au** is a specification for publishing **point** or **region-mapped** Australian geospatial data in CSV format to data.gov.au and other open data portals. Datasets in this format are supported by [TerriaJS](https://github.com/terriajs/terriajs) (and hence the [National Map](http://nationalmap.gov.au/)) and are intended to be as reusable as possible. A `State` column in a CSV file tagged ` CSV-geo-au` can unambiguously be understood to refer to an Australian state, for example.
 
 Datasets with line feature or explicit polygons (instead of references to standard polygon boundaries) are not covered by this standard, and should be provided as GeoJSON.
 
-In this document:
+**Document Status: initial use. This document will evolve, but it is unlikely that field names currently recommended will become deprecated.**
+
+### Terminology
 
 * **Recommended**: The best field name for maximum reusability. High priority for support in TerriaJS (the software that runs the National Map). Sometimes several options are recommended, depending on your need for precision.
 * **Accepted**: A field name which is reasonably reusable. Generally supported by TerriaJS.
@@ -18,9 +20,8 @@ In this document:
 
 It is generally acceptable to include "discouraged" fields if there is also recommended or accepted fields as the recommended or accepted fields will be used.
 
-**Document Status: initial use. This document will evolve, but it is unlikely that field names currently recommended will become deprecated.**
 
-## Principles of design
+### Goals
 
 In designing this specification, we have tried to balance these goals:
 
@@ -31,7 +32,7 @@ In designing this specification, we have tried to balance these goals:
 * Encouraging the production of datasets which are easy to use by consumers who are unaware of this specification.
 * Aligning with attribute names already used by authorities such as the ASGS
 
-## General recommendations
+### General recommendations
 
 Geospatial fields SHOULD be provided after all other fields.
 
@@ -44,15 +45,13 @@ The CSV format MUST:
 
 It SHOULD be encoded in UTF-8. Headers are not considered to be case-sensitive.
 
-Consider publishing the data as a [Tabular Data Package](http://dataprotocols.org/tabular-data-package/) by following those recommendations and including a `datapackage.json`. (Data Package use in Australia is experimental, for now.)
-
-### Tags
-In data.gov.au, datasets that conform to this standard SHOULD be tagged "` CSV-geo-au`". The dataset MUST NOT contain CSV files that do not conform (but may contain other non-CSV files) as these may be ambiguous and lead to confusing display in the National Map and other services.
+### Use in data.gov.au
+In data.gov.au and other CKAN-based portals, resources (individual files) that conform to this standard SHOULD be given a resource type of `csv-geo-au`. This is required for National Map to locate and display them.
 
 ###Quick summary
 Tables should look like one of these:
 
-    ID,Population,LGA_code,State
+    ID,Population,LGA_code_2015,State
     1,100600,24600,VIC
 
 or
@@ -66,10 +65,9 @@ or
     ID,Name,Lat,Lon
     1,Bacchus Marsh Airport,-37.7313,144.4212
 
-EITHER a latitude/longitude pair, OR one or more of the following region fields should be provided.
+EITHER a latitude/longitude pair, OR one or more region fields should be provided.
 
-
-## Point data
+## Point data (latitude & longitude)
 
 To encode individual points with a latitude and longitude, two fields are required. Each MUST be a number in decimal degrees. Numbers SHOULD NOT be enclosed in double quotes.
 
@@ -92,83 +90,74 @@ Locations SHOULD be given in the GDA94 datum ([EPSG:4283](http://spatialreferenc
 ## LGAs, postcodes and other regions 
 
 
-### State
-
-Authority  | Region name | Name or code | Year | Field name
----|---|---|---|---
-ABS| State (ABS approximation) |2-3 letter code (VIC,NT); or name (New South Wales)   |Unspecified|`state`
-ABS| State (ABS approximation) |2-3 letter code, or name  |2014|`state_2011`
-ABS| State (ABS approximation) |1 digit code (3=Queensland) |Unspecified|`ste_code` (recommended),`ste`
-ABS| State (ABS approximation) |1 digit code  |2014|`ste_code_2014`
-
-The contents MUST be the two or three-letter form of the state or territory ("VIC", "NT"). It is not considered to be case-sensitive.
-
 ### Australian Statistical Geography Standard (ABS statistical regions)
 
-These statistical area types [defined by the ABS](http://www.abs.gov.au/websitedbs/d33  10114.nsf/home/australian+statistical+geography+standard+%28asgs%29) are all currently supported by TerriaJS unless stated otherwise. In each case, the more precise `...2011` version SHOULD be used if you know which version of the ABS boundaries is appropriate. (TerriaJS does not currently support different versions.)
+These statistical area types [defined by the ABS](http://www.abs.gov.au/websitedbs/d33  10114.nsf/home/australian+statistical+geography+standard+%28asgs%29) are all currently supported by TerriaJS unless stated otherwise. In each case, the more precise `...2011` version SHOULD be used if you know which version of the ABS boundaries is appropriate. Certain boundaries move significantly every year (eg LGA), and some are completely renumbered in each reissue (eg, Tourism Regions). (TerriaJS does not currently support different versions.)
 
 These field names generally match those used by the ABS. Synonyms are provided for consistency, simplicity and to match common practice.
 
+### State
+
+Name or code | Field with year | Field without year | Synonyms
+---|---|---|---|---
+2-3 letter code (VIC,NT); or name (New South Wales)   |Unspecified|`state`
+2-3 letter code, or name  |2014|`state_2011`
+1 digit code (3=Queensland) |Unspecified|`ste_code` (recommended),`ste`
+1 digit code  |2014|`ste_code_2014`
+
+The contents MUST be the two or three-letter form of the state or territory ("VIC", "NT"). It is not considered to be case-sensitive.
+
+
 #### Statistical area 1 (SA1)
 
-*Note: Not currently supported by TerriaJS for performance reasons*
+*Note: Not currently supported by TerriaJS for performance reasons. The use of "maincode" here follows the ABS' convention.*
 
-Name or code | Year | Field name | Synonym
+Name or code | Field with year | Field without year | Synonym
 ---|---|---|---
-11-digit code  |Unspecified|`sa1_maincode`| `sa1`,`sa1_code`
-11-digit code  |2011|`sa1_maincode_2011`
-7-digit code  |Unspecified|`sa1_7digitcode`
-7-digit code  |2011|`sa1_7digitcode_2011`
+11-digit code  |`sa1_maincode_2011`|`sa1_maincode`| `sa1`,`sa1_code`
+7-digit code  |`sa1_7digitcode_2011`|`sa1_7digitcode`
 
 #### Statistical area 2 (SA2)
 
-Name or code | Year | Field name | Synonym
+Name or code | Field with year | Field without year | Synonym
 ---|---|---|---
-9-digit code *(1 digit state + 2 digit SA4 + 2 digit SA3 + 4 digits)*  |Unspecified|`sa2_code`| `sa2`
-9-digit code                                                           |2011       |`sa2_code_2011`
-5-digit code *(1 digit state + 4 digits)*                              |Unspecified|`sa2_5digitcode`
-5-digit code                                                           |2011       |`sa2_5digitcode_2011`
-Name (eg "O'Connor (WA)")                                              |Unspecified|`sa2_name`
-Name                                                                   |2011       |`sa2_name_2011`
+9-digit code<br/> *(1 digit state + 2 digit SA4 + 2 digit SA3 + 4)*  |`sa2_code_2011`|`sa2_code`| `sa2`
+5-digit code<br/> *(1 digit state + 4)*                              |`sa2_5digitcode_2011`|`sa2_5digitcode`
+Name (eg "O'Connor (WA)")                                              |`sa2_name_2011`|`sa2_name`
 
 #### Statistical area 3 (SA3)
 
-Name or code | Year | Field name | Synonym
+Name or code | Field with year | Field without year | Synonym
 ---|---|---|---
-5-digit code *(1 digit state + 2 digit SA4 + 2 digits)*  |Unspecified |`sa3_code`|`sa3`
-5-digit code  |2011        |`sa3_code_2011`
-Name (eg "North Sydney - Mosman")         |Unspecified |`sa3_name`
-Name          |2011        |`sa3_name_2011`
+5-digit code *(1 digit state + 2 digit SA4 + 2 digits)*  |`sa3_code_2011` |`sa3_code`|`sa3`
+Name *(eg "North Sydney - Mosman")*          |`sa3_name_2011` |`sa3_name`
 
 #### Statistical area 4 (SA4)
 
-Name or code | Year | Field name| Synonym
+Name or code | Field with year | Field without year| Synonym
 ---|---|---|---
-3 digit code *(1-digit state code + 2)*  |Unspecified |`sa4_code`|`sa4`
-3 digit code                             |2011        |`sa4_code_2011`
-Name *(eg "Melbourne - Inner South")*    |Unspecified |`sa4_name`
-Name                                     |2011        |`sa4_name_2011`
+3 digit code *(1-digit state code + 2)*  |`sa4_code_2011` |`sa4_code`|`sa4`
+Name *(eg "Melbourne - Inner South")*    |`sa4_name_2011`|`sa4_name`
 
 #### [Greater Capital City Statistical Areas](http://www.abs.gov.au/ausstats/abs@.nsf/0/89DE0953464EE050CA257801000C651B?opendocument) (GCCSA)
 
-Name or code | Year | Field name| Synonym
+Name or code | Field with year | Field without year| Synonym
 ---|---|---|---
-5-character alphanumeric code *(1-digit state code + 4)*  |Unspecified |`gccsa_code`|`gccsa`
-5-character alphanumeric code *(eg 1GSYD)*                |2011        |`gccsa_code_2011`
-Name *(eg "Greater Sydney")*                              |Unspecified |`gccsa_name`
-Name                                                      |2011        |`gccsa_name_2011`
+5-character alphanumeric code <br/>*(1-digit state code + 4, eg 1GSYD)*  |`gccsa_code_2011` |`gccsa_code`|`gccsa`
+Name *(eg "Greater Sydney")*                              |`gccsa_name_2011`|`gccsa_name`
 
 #### [Signifcant Urban Areas](http://www.abs.gov.au/ausstats/abs@.nsf/Latestproducts/7D88D2916BF4BBE3CA257A980013999D?opendocument) (SUA)
 
-Name or code | Year | Field name| Synonym
+Name or code |  Field with year | Field without year| Synonym
 ---|---|---|---
-4-digit code *(non-hierarchical)*       |Unspecified |`sua_code`|`sua`
-4-digit code *(eg 5009)*                |2011        |`sua_code_2011`
-Name *(eg "Warragul - Drouin")*         |Unspecified |`sua_name`
-Name                                    |2011        |`sua_name_2011`
+4-digit code *(non-hierarchical, eg 5009)*       |`sua_code_2011` |`sua_code`|`sua`
+Name *(eg "Warragul - Drouin")*         |`sua_name_2011`| |`sua_name`
 
-### ABS structures in the ASGS that are not supported by TerriaJS
-Structure | Name or code | With year | Without year | Without year (Synonym)
+### ABS structures in the ASGS that are not currently supported by TerriaJS
+
+*Note: As of June 2015, no decisions have been made about future support of these structures.*
+
+Structure | Name or code | With year | Without year | Synonym
 ---|---|---|---|---|---
 [Mesh block](http://www.abs.gov.au/ausstats/abs@.nsf/0/A53A152BBF2992EBCA257801000C64BE?opendocument) | 11 digit code | `mb_code_2011` | `mb_code`| `mb`
 [Section of state](http://www.abs.gov.au/ausstats/abs@.nsf/Latestproducts/3353FBEF62DC7586CA257A9800139A0B?opendocument) | 2 digit code | `sos_code_2011` | `sos_code` | `sos`
@@ -186,12 +175,10 @@ A four digit Australian postcode.
 
 ##### Recommended field names 
 
-Authority  | Region name | Name or code | Year | Field name
+Authority  | Region name | Name or code | Field with year | Field without year
 ---|---|---|---|---
-PSMA| Postcode |4 digit code  |Unspecified|`postcode`
-PSMA| Postcode|4 digit code  |2015|`postcode_2015`
-ABS| Postal area (ABS approximation) |4 digit code  |Unspecified|`poa`
-ABS| Postal area (ABS approximation) |4 digit code  |2011|`poa_2011`
+PSMA| Postcode |4 digit code  |`postcode_2015`|`postcode`
+ABS| Postal area (ABS approximation) |4 digit code  |`poa_2011`,|`poa`
 
 Note: PSMA's boundaries are not open data, and TerriaJS hence uses the ABS Postal areas to display postcodes. They are [not quite the same](http://www.abs.gov.au/websitedbs/censushome.nsf/home/factsheetspoa?opendocument&navpos=450).) 
 
@@ -200,12 +187,10 @@ For greater precision, additional fields `Suburb` and `State` MAY be provided. F
 
 #### Local Government Area
 
-Name or code | Year | Field name | Synonym
+Name or code | Field with year | Field without year | Synonym
 ---|---|---|---
-[5 digit code](http://www.abs.gov.au/AUSSTATS/abs@.nsf/DetailsPage/1270.0.55.003July%202011) *(eg "31000")* |Unspecified|`lga_code` (recommended),`lga`
-5 digit code  |2014|`lga_code_2014`
-Name *(eg "Brisbane")* |Unspecified|`lga_name`|`adm2` (see note)
-Name  |2014|`lga_name_2014`
+[5 digit code](http://www.abs.gov.au/AUSSTATS/abs@.nsf/DetailsPage/1270.0.55.003July%202011) *(eg "31000")* |`lga_code_2014`|`lga_code`|`lga`
+Name *(eg "Brisbane")* |`lga_name_2014`|`lga_name`|`adm2` (see note)
 
 Complete lists of 5 codes are available [here](http://www.abs.gov.au/AUSSTATS/abs@.nsf/DetailsPage/1270.0.55.003July%202011).
 
@@ -221,35 +206,29 @@ A separate `State` column (and/or `lga_code` column) MUST be provided, as LGA na
 
 ABS approximations of electoral districts. [More information](http://www.abs.gov.au/ausstats/abs@.nsf/0/9C8331F55896F9C5CA2578D40012CF99?opendocument)
 
-Name or code | Year | Field name| Synonym
+Name or code | Field with year | Field without year | Synonym
 ---|---|---|---
-3 digit code *(1-digit state code + 2, e.g. "402")*  |Unspecified|`ced_code`|`ced`
-3 digit code  |2011                               |`ced_code_2011`
-Name *(eg "Barker")*    |Unspecified|`ced_name`
-Name  |2011                                       |`ced_name_2011`
+3 digit code *(1-digit state code + 2, e.g. "402")*  |`ced_code_2011`|`ced_code`|`ced`
+Name *(eg "Barker")*    |`ced_code_2011`|`ced_name`
 
 
 #### State Electoral Division
 
 ABS approximations of electoral districts. [More information](http://www.abs.gov.au/ausstats/abs@.nsf/Latestproducts/94496C7EA68A1522CA2578D40012CFB8)
 
-Name or code | Year | Field name| Synonym
+Name or code | Field with year | Field without year | Synonym
 ---|---|---|---
-5 digit code *(1-digit state code + 4, e.g. "20106")*  |Unspecified|`sed_code`|`sed`
-5 digit code  |2011                               |`sed_code_2011`
-Name *(eg "Albert Park (Southern Metropolitan)")*    |Unspecified|`sed_name`
-Name  |2011                                       |`sed_name_2011`
+5 digit code *(1-digit state code + 4, e.g. "20106")*  |`sed_code_2011`|`sed_code`|`sed`
+Name *(eg "Albert Park (Southern Metropolitan)")*    |`sed_name_2011`|`sed_name`
 
 #### State Suburbs
 
 ABS approximations of suburbs. [More information](http://www.abs.gov.au/AUSSTATS/abs@.nsf/Previousproducts/2C6132C0B332C336CA2578D40012CF76)
 
-Name or code | Year | Field name| Synonym
+Name or code | Field with year| Field without year | Synonym
 ---|---|---|---
-5 digit code *(1-digit state code + 4, e.g. "10002")*  |Unspecified|`sesc_code`|`ssc`
-5 digit code                                           |2011       |`ssc_code_2011`
-Name *(eg "Abbotsford (NSW)")*                         |Unspecified|`ssc_name`
-Name                                                   |2011       |`ssc_name_2011`
+5 digit code *(1-digit state code + 4, e.g. "10002")*  |`ssc_code_2011`|`ssc_code`|`ssc`
+Name *(eg "Abbotsford (NSW)")*                         |`ssc_name_2011`|`ssc_name`
 
 The field name `suburb` is currently treated as a synonym for `ssc` but may change.
 
@@ -260,15 +239,29 @@ Structure | Name or code | With year | Without year | Without year (Synonym)
 [Natural Resource Management Regions](http://www.abs.gov.au/ausstats/abs@.nsf/0/EA3811589050F62ACA2578D40012CFFE?opendocument) | 3-digit code | `nrmr_code_2011` | `nrmr_code` | `nrmr`
 [Tourism Regions](http://www.abs.gov.au/ausstats/abs@.nsf/0/FA98FE427F88B97FCA2578D40012D01C?opendocument) | 5 character code: `_R___` | `tr_code_2011` | `tr_code` | `tr`
 
-### Other boundaries
+### Country boundaries
 
-* `CNT2` (`iso2` acceptable): "Two letter country codes" ([ISO 3166-1 Alpha 2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2))
-* `CNT3` (`iso3` acceptable): "Three letter country codes" ([ISO 3166-1 Alpha 3](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3))
+Name or code | Field | Synonyms
+---|---|---|---|---
+Two letter country code ([ISO 3166-1 Alpha 2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2))<br/>*(eg AU)* | `cnt2` | `iso2`
+Three letter country code ([ISO 3166-1 Alpha 3](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3))<br/>*(eg AUS)* | `cnt3` | `iso3`
 
 ### Other boundaries not currently supported by TerriaJS
-These are included here to support standardisation and future support by TerriaJS.
+These are included here to support standardisation and future support by TerriaJS. As of June 2015, no decisions have been made about future support.
 
-* `SOS`, `SOS_2011`, `SOS_2006`: Section of State (ABS) (http://www.abs.gov.au/ausstats/abs@.nsf/Lookup/2901.0Chapter23102011)
-* `SOSR`, `SOSR_2011`, `SOSR_2006`: Section of State Range (ABS)
-* `SLA`, `SLA_2011`, `SLA_2006` : Statistical Local Area (ABS)
-* `PHN`, `PHN_2015`, `PHN_2014`: Primary Health Network (Department of Health)
+#### [Primary Health Network](http://www.health.gov.au/internet/main/publishing.nsf/Content/phn-boundaries) (Department of Health)
+
+Name or code | Field with year | Field without year | Synonym
+---|---|---|---
+6 character `PHN___` code *(eg PHN101)* | `phn_code_2015` | `phn_code` | `phn`
+Name *(eg "Central and Eastern Sydney")* | `phn_name_2015` | `phn_name`
+
+#### [Statistical Local Area](http://www.abs.gov.au/ausstats/abs@.nsf/Lookup/2901.0Chapter23002011) 
+
+An obsolete ABS structure.
+
+Name or code | Field with year | Field without year | Synonym
+---|---|---|---
+Code | `sla_code_2006` | `sla_code` | `sla`
+Name | `sla_name_2006` | `sla_name` 
+
