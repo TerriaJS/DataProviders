@@ -33,8 +33,6 @@ In designing this specification, we have tried to balance these goals:
 
 ### General recommendations
 
-Geospatial fields SHOULD be provided after all other fields.
-
 The CSV format MUST:
 
 * Consist only of one header row followed by data rows (no other metadata within the file)
