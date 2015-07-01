@@ -1,12 +1,12 @@
 ---
 layout: default
-title: CSV-geo-au
-permalink: /CSV-geo-au/
+title: csv-geo-au
+permalink: /csv-geo-au/
 ---
-##  CSV-geo-au 1.1
+##  csv-geo-au 1.1
 
 
-**CSV-geo-au** is a specification for publishing **point** or **region-mapped** Australian geospatial data in CSV format to data.gov.au and other open data portals. Datasets in this format are supported by [TerriaJS](https://github.com/terriajs/terriajs) (and hence the [National Map](http://nationalmap.gov.au/)) and are intended to be as reusable as possible. A `State` column in a CSV file tagged ` CSV-geo-au` can unambiguously be understood to refer to an Australian state, for example.
+**csv-geo-au** is a specification for publishing **point** or **region-mapped** Australian geospatial data in CSV format to data.gov.au and other open data portals. Datasets in this format are supported by [TerriaJS](https://github.com/terriajs/terriajs) (and hence the [National Map](http://nationalmap.gov.au/)) and are intended to be as reusable as possible. A `State` column in a CSV file tagged ` csv-geo-au` can unambiguously be understood to refer to an Australian state, for example.
 
 Datasets with line feature or explicit polygons (instead of references to standard polygon boundaries) are not covered by this standard, and should be provided as GeoJSON.
 
@@ -28,7 +28,6 @@ In designing this specification, we have tried to balance these goals:
 * Maximising the chance that existing CSV files may accidentally conform, correctly.
 * Allowing motivated dataset publishers to be very precise about the exact boundaries their data relates to.
 * Making column names guessable without consulting the specification.
-* Matching what is currently supported in TerriaJS
 * Encouraging the production of datasets which are easy to use by consumers who are unaware of this specification.
 * Aligning with attribute names already used by authorities such as the ASGS
 
